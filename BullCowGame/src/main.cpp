@@ -1,8 +1,37 @@
 #include <iostream>
 #include <string>
 
-int main() {
-	constexpr int WORD_LENGTH = 5;
+void printIntro() {
+	constexpr int WORD_LENGTH = 9;
+
+	// Game Introduction
 	std::cout << "Welcome to Bulls and Cows, a fun word game" << std::endl;
 	std::cout << "Can you guess the " << WORD_LENGTH << " letter isogram I'm thinking of ?" << std::endl;
+	std::cout << std::endl;
+
+	return;
+}
+
+std::string getGuess() {
+	//Get input from the user
+	std::string Guess = "";
+	std::cout << "Enter your Guess	:";
+	getline(std::cin, Guess);
+
+	//print the guess
+	std::cout << "Your Guess was	:" << Guess << std::endl;
+	std::cout << std::endl;
+
+	return Guess;
+}
+
+int main() {
+
+	printIntro();
+
+	constexpr int NUMBER_OF_TURNS = 5;
+	for(int i = 0; i < NUMBER_OF_TURNS;i++) {
+		std::string Guess = getGuess();
+	}
+
 }
