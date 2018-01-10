@@ -18,20 +18,24 @@ std::string getGuess() {
 	std::cout << "Enter your Guess	:";
 	getline(std::cin, Guess);
 
-	//print the guess
-	std::cout << "Your Guess was	:" << Guess << std::endl;
-	std::cout << std::endl;
-
 	return Guess;
 }
 
+void playGame() {
+	constexpr int NUMBER_OF_TURNS = 5;
+
+	//loop for number of turns
+	for (int i = 0; i < NUMBER_OF_TURNS; i++) {
+		std::string Guess = getGuess();
+		std::cout << "Your Guess was	:" << Guess << std::endl;
+		std::cout << std::endl;
+	}
+}
+
+//Application Entry point
 int main() {
 
 	printIntro();
-
-	constexpr int NUMBER_OF_TURNS = 5;
-	for(int i = 0; i < NUMBER_OF_TURNS;i++) {
-		std::string Guess = getGuess();
-	}
-
+	playGame();
+	return 0;		//Exit Application
 }
