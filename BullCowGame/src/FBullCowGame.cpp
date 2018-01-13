@@ -7,33 +7,41 @@ FBullCowGame::FBullCowGame() {	reset(); }
 
 int32 FBullCowGame::getMaxTries() const { return myMaxTries; }
 int32 FBullCowGame::getCurrentTry() const { return myCurrentTry; }
-int32 FBullCowGame::getHiddenWordLength() const {	return int32(); }
-bool FBullCowGame::isGameWon() const {}
+int32 FBullCowGame::getHiddenWordLength() const {	return myHiddenWord.length(); }
+bool FBullCowGame::isGameWon() const { return bGameisWon; } // TODO implement function
 
 void FBullCowGame::reset() {
 	constexpr int32 MAX_TRIES = 8;
-	myMaxTries = MAX_TRIES;
-
 	const FString HIDDEN_WORD = "planet";
-	myHiddenWord = HIDDEN_WORD;
 
+	myMaxTries = MAX_TRIES;
+	myHiddenWord = HIDDEN_WORD;
 	myCurrentTry = 0;
+	bGameisWon = false;
 	return;
 }
 
-bool FBullCowGame::checkGuessValidity(FString) const { }
+EGuessStatus FBullCowGame::checkGuessValidity(FString Guess) const {
+	if(false) {		// Check in not an Isogram
+		return EGuessStatus::Not_Isogram;
+	}
+	else if (false) {	// Check if all characters are in lowercase
+		return EGuessStatus::Not_Lowercase;
+	}
+	else if(getHiddenWordLength() != Guess.length()) {	// Check if correct length
+		return EGuessStatus::Wrong_Length;
+	}
+	return EGuessStatus::OK;	//TODO Make an Actual Error list
+}
 
 // Receives VALID guess, increments try #
-FBullCowCount FBullCowGame::submitGuess(FString Guess) {
-	// increment try #
+FBullCowCount FBullCowGame::submitValidGuess(FString Guess) {
 	myCurrentTry++;
-
-	// setup a return variable
+	int32 WordLength = myHiddenWord.length();	// Assuming same length as guess
 	FBullCowCount BullCowCount;
 
-	int32 hiddenWordLength = myHiddenWord.length();
-	for(int32 HWChar =0; HWChar<hiddenWordLength; HWChar++) {
-		for (int32 GChar = 0; GChar < hiddenWordLength; GChar++) {
+	for(int32 HWChar =0; HWChar<WordLength; HWChar++) {
+		for (int32 GChar = 0; GChar < WordLength; GChar++) {
 			if(Guess[GChar] == myHiddenWord[HWChar]) {
 				if(HWChar == GChar) { BullCowCount.Bulls++;	}
 				else { BullCowCount.Cows++;   }
@@ -41,6 +49,7 @@ FBullCowCount FBullCowGame::submitGuess(FString Guess) {
 		}
 		
 	}
+	if (BullCowCount.Bulls == WordLength) { bGameisWon = true; }
 
 	return BullCowCount;
 }

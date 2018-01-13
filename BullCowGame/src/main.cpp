@@ -13,23 +13,47 @@ using int32 = int;
 FBullCowGame BCGame;		//Instantiate a Game instance
 
 void printIntro() {
-	constexpr int32 WORD_LENGTH = 9;
 
 	// Game Introduction
-	std::cout << "Welcome to Bulls and Cows, a fun word game" << std::endl;
-	std::cout << "Can you guess the " << WORD_LENGTH << " letter isogram I'm thinking of ?" << std::endl;
+	std::cout << "\nWelcome to Bulls and Cows, a fun word game" << std::endl;
+	std::cout << "Can you guess the " << BCGame.getHiddenWordLength() << " letter isogram I'm thinking of ?" << std::endl;
 	std::cout << std::endl;
 
 	return;
 }
 
-FText getGuess() {
-	int32 currentTry = BCGame.getCurrentTry();
-	//Get input from the user
+// loop continually until user enters a valid guess
+FText getValidGuess() {
+	EGuessStatus status = EGuessStatus::Invalid;
 	FText Guess = "";
-	std::cout << "Try " << currentTry << ". Enter your Guess	:";
-	getline(std::cin, Guess);
 
+	do {
+		//Get input from the user
+		int32 currentTry = BCGame.getCurrentTry();
+		std::cout << "Try " << currentTry << ". Enter your Guess	:";
+		getline(std::cin, Guess);
+
+		status = BCGame.checkGuessValidity(Guess);
+		switch (status) {
+		case EGuessStatus::Wrong_Length:
+			std::cout << "ERR_WRONGLENGTH: Please Enter a " << BCGame.getHiddenWordLength() << " letter guess." << std::endl;
+			break;
+		case EGuessStatus::Not_Isogram:
+			std::cout << "ERR_NOTISOGRAM: Please Enter a word wothout repeating letter." << std::endl;
+			break;
+		case EGuessStatus::Not_Lowercase:
+			std::cout << "ERR_CASEMISMATCH: Please input only lowercase letters." << std::endl;
+			break;
+		case EGuessStatus::Invalid:
+		case EGuessStatus::OK:
+		default:
+			// Assuming Guess is valid and exiting loop
+			break;
+		}
+		if (status != EGuessStatus::OK) {
+			std::cout << std::endl;
+		}
+	} while (status != EGuessStatus::OK);	// Keep looping until valid input is obtained.
 	return Guess;
 }
 
@@ -37,16 +61,15 @@ void playGame() {
 	BCGame.reset();
 	int32 maxTries = BCGame.getMaxTries();
 	
-	//loop for number of turns
-	// TODO change from FOR to WHILE loop
-	for (int32 i = 0; i < maxTries; i++) {
-		FText Guess = getGuess();		// TODO check if guess is valid
+	//loop untill game is NOT won or there are tries left
+	while ( !BCGame.isGameWon() && BCGame.getCurrentTry() <= maxTries) {
+		FText Guess = getValidGuess();		// TODO check if guess is valid
 
 		// Submit valid guess to game
-		FBullCowCount BullCowCount = BCGame.submitGuess(Guess);	
-		// print number of Bulls and Games
+		FBullCowCount BullCowCount = BCGame.submitValidGuess(Guess);	
+		
 		std::cout << "Bulls  = " << BullCowCount.Bulls;
-		std::cout << ". Cows  = " << BullCowCount.Cows << std::endl;
+		std::cout << ". Cows  = " << BullCowCount.Cows << std::endl << std::endl;
 	}
 
 	// TODO Add a Game Summary
@@ -54,7 +77,7 @@ void playGame() {
 
 bool AskToPlay() {
 	bool control = false;
-	std::cout << "Do you want to Play again		?";
+	std::cout << "Do you want to continue playing  ? ";
 	FText response = "";
 	getline(std::cin,response);
 
