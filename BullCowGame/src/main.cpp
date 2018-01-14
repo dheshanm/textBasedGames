@@ -2,14 +2,17 @@
  * This acts as the view in a MCV pattern and is responsible for all the user
  * Interraction. For game logic see FBullCowGame class.
  */
+#pragma once
 
 #include <iostream>
 #include <string>
 #include "FBullCowGame.h"
 
+// Making code Unreal friendly
 using FText = std::string;
 using int32 = int;
 
+// Function prototypes.
 void printIntro();
 FText getValidGuess();
 void playGame();
@@ -17,11 +20,19 @@ bool AskToPlay();
 void printGameSummary();
 
 
-FBullCowGame BCGame;		//Instantiate a Game instance
+FBullCowGame BCGame;		// Instantiate a Game instance [Instance is re-used accross plays].
+
+// Application Entry point.
+int main() {
+
+	do {
+		printIntro();
+		playGame();
+	} while (AskToPlay());
+	return 0;		//Exit Application.
+}
 
 void printIntro() {
-
-	// Game Introduction
 	std::cout << "\nWelcome to Bulls and Cows, a fun word game\n" << std::endl;
 	std::cout << "          }   {         ___ " << std::endl;
 	std::cout << "          (o o)        (o o) " << std::endl;
@@ -33,6 +44,24 @@ void printIntro() {
 	std::cout << std::endl;
 
 	return;
+}
+
+// Plays an instance of the game to completion.
+void playGame() {
+	BCGame.reset();
+	int32 maxTries = BCGame.getMaxTries();
+	
+	//loop untill game is NOT won or there are tries left
+	while ( !BCGame.isGameWon() && BCGame.getCurrentTry() <= maxTries) {
+		FText Guess = getValidGuess();
+
+		// Submit valid guess to game
+		FBullCowCount BullCowCount = BCGame.submitValidGuess(Guess);	
+		
+		std::cout << "Bulls  = " << BullCowCount.Bulls;
+		std::cout << ". Cows  = " << BullCowCount.Cows << std::endl << std::endl;
+	}
+	printGameSummary();
 }
 
 // loop continually until user enters a valid guess
@@ -71,24 +100,6 @@ FText getValidGuess() {
 	return Guess;
 }
 
-void playGame() {
-	BCGame.reset();
-	int32 maxTries = BCGame.getMaxTries();
-	
-	//loop untill game is NOT won or there are tries left
-	while ( !BCGame.isGameWon() && BCGame.getCurrentTry() <= maxTries) {
-		FText Guess = getValidGuess();		// TODO check if guess is valid
-
-		// Submit valid guess to game
-		FBullCowCount BullCowCount = BCGame.submitValidGuess(Guess);	
-		
-		std::cout << "Bulls  = " << BullCowCount.Bulls;
-		std::cout << ". Cows  = " << BullCowCount.Cows << std::endl << std::endl;
-	}
-
-	// TODO Add a Game Summary
-	printGameSummary();
-}
 
 void printGameSummary() {
 	if (BCGame.isGameWon()) {
@@ -109,14 +120,4 @@ bool AskToPlay() {
 		control = true;
 	}
 	return control;
-}
-
-//Application Entry point
-int main() {
-
-	do {
-		printIntro();
-		playGame();
-	} while (AskToPlay());
-	return 0;		//Exit Application
 }
