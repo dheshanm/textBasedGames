@@ -37,7 +37,7 @@ FText getValidGuess() {
 	do {
 		//Get input from the user
 		int32 currentTry = BCGame.getCurrentTry();
-		std::cout << "Try " << currentTry << ". Enter your Guess	:";
+		std::cout << "Try " << currentTry << " of " << BCGame.getMaxTries()  << ". Enter your Guess	:";
 		getline(std::cin, Guess);
 
 		status = BCGame.checkGuessValidity(Guess);
