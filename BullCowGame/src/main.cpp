@@ -22,7 +22,13 @@ FBullCowGame BCGame;		//Instantiate a Game instance
 void printIntro() {
 
 	// Game Introduction
-	std::cout << "\nWelcome to Bulls and Cows, a fun word game" << std::endl;
+	std::cout << "\nWelcome to Bulls and Cows, a fun word game\n" << std::endl;
+	std::cout << "          }   {         ___ " << std::endl;
+	std::cout << "          (o o)        (o o) " << std::endl;
+	std::cout << "   /-------\\ /          \\ /-------\\ " << std::endl;
+	std::cout << "  / | BULL |O            O| COW  | \\ " << std::endl;
+	std::cout << " *  |-,--- |              |------|  * " << std::endl;
+	std::cout << "    ^      ^              ^      ^ " << std::endl;
 	std::cout << "Can you guess the " << BCGame.getHiddenWordLength() << " letter isogram I'm thinking of ?" << std::endl;
 	std::cout << std::endl;
 
@@ -31,7 +37,8 @@ void printIntro() {
 
 // loop continually until user enters a valid guess
 FText getValidGuess() {
-	EGuessStatus status = EGuessStatus::Invalid;
+	// ReSharper disable once CppInitializedValueIsAlwaysRewritten
+	EGuessStatus status = EGuessStatus::Uninitialized;
 	FText Guess = "";
 
 	do {
@@ -51,7 +58,7 @@ FText getValidGuess() {
 		case EGuessStatus::Not_Lowercase:
 			std::cout << "ERR_CASEMISMATCH: Please input only lowercase letters." << std::endl;
 			break;
-		case EGuessStatus::Invalid:
+		case EGuessStatus::Uninitialized:
 		case EGuessStatus::OK:
 		default:
 			// Assuming Guess is valid and exiting loop
