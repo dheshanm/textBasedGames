@@ -10,6 +10,13 @@
 using FText = std::string;
 using int32 = int;
 
+void printIntro();
+FText getValidGuess();
+void playGame();
+bool AskToPlay();
+void printGameSummary();
+
+
 FBullCowGame BCGame;		//Instantiate a Game instance
 
 void printIntro() {
@@ -73,11 +80,21 @@ void playGame() {
 	}
 
 	// TODO Add a Game Summary
+	printGameSummary();
+}
+
+void printGameSummary() {
+	if (BCGame.isGameWon()) {
+		std::cout << "\tWell Done - You Win !!!" << std::endl;
+	}
+	else {
+		std::cout << "\tBetter Luck Next Time..." << std::endl;
+	}
 }
 
 bool AskToPlay() {
 	bool control = false;
-	std::cout << "Do you want to continue playing  ? ";
+	std::cout << "Do you want to continue playing [SAME hidden word]  ? ";
 	FText response = "";
 	getline(std::cin,response);
 
